@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Price Range Slider</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#2ca0a4;
+}
+
+.card{
+    background:#f2f2f2;
+    padding:30px;
+    width:400px;
+    border-radius:15px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.2);
+}
+
+.card h2{
+    font-size:22px;
+    margin-bottom:5px;
+}
+
+.card p{
+    font-size:13px;
+    color:#666;
+    margin-bottom:25px;
+}
+
+.input-box{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:25px;
+}
+
+.input-group{
+    display:flex;
+    flex-direction:column;
+    width:45%;
+}
+
+.input-group label{
+    font-size:13px;
+    color:#555;
+    margin-bottom:5px;
+}
+
+.input-group input{
+    padding:8px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:14px;
+}
+
+.slider-container{
+    position:relative;
+    height:40px;
+}
+
+input[type="range"]{
+    position:absolute;
+    width:100%;
+    pointer-events:none;
+    -webkit-appearance:none;
+    background:transparent;
+}
+
+input[type="range"]::-webkit-slider-thumb{
+    pointer-events:auto;
+    -webkit-appearance:none;
+    height:18px;
+    width:18px;
+    border-radius:50%;
+    background:#2ca0a4;
+    cursor:pointer;
+    border:none;
+}
+
+input[type="range"]::-webkit-slider-runnable-track{
+    height:4px;
+    background:#ddd;
+    border-radius:5px;
+}
+
+.progress{
+    position:absolute;
+    height:4px;
+    background:#2ca0a4;
+    top:50%;
+    transform:translateY(-50%);
+    border-radius:5px;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Price Range</h2>
+    <p>Use slider or enter min and max price</p>
+
+    <div class="input-box">
+        <div class="input-group">
+            <label>Min</label>
+            <input type="number" id="minInput" value="1768">
+        </div>
+        <div class="input-group">
+            <label>Max</label>
+            <input type="number" id="maxInput" value="8400">
+        </div>
+    </div>
+
+    <div class="slider-container">
+        <div class="progress" id="progress"></div>
+        <input type="range" id="minRange" min="0" max="10000" value="1768">
+        <input type="range" id="maxRange" min="0" max="10000" value="8400">
+    </div>
+</div>
+
+<script>
+const minRange = document.getElementById("minRange");
+const maxRange = document.getElementById("maxRange");
+const minInput = document.getElementById("minInput");
+const maxInput = document.getElementById("maxInput");
+const progress = document.getElementById("progress");
+
+const rangeGap = 100;
+
+function updateSlider(){
+    let minVal = parseInt(minRange.value);
+    let maxVal = parseInt(maxRange.value);
+
+    if(maxVal - minVal < rangeGap){
+        if(event.target === minRange){
+            minRange.value = maxVal - rangeGap;
+        } else {
+            maxRange.value = minVal + rangeGap;
+        }
+    } else {
+        minInput.value = minVal;
+        maxInput.value = maxVal;
+
+        progress.style.left = (minVal / maxRange.max) * 100 + "%";
+        progress.style.right = 100 - (maxVal / maxRange.max) * 100 + "%";
+    }
+}
+
+minRange.addEventListener("input", updateSlider);
+maxRange.addEventListener("input", updateSlider);
+
+minInput.addEventListener("input", () => {
+    minRange.value = minInput.value;
+    updateSlider();
+});
+
+maxInput.addEventListener("input", () => {
+    maxRange.value = maxInput.value;
+    updateSlider();
+});
+
+updateSlider();
+</script>
+
+</body>
+</html>
